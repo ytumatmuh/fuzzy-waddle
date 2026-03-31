@@ -1,26 +1,42 @@
 import socket
+import time
 
-# Ayarlar
-hedef_ip = "8.8.8.8"
-port_listesi = [53, 80, 443]
+print("=== Python Port Tarayiciya Hos Geldin ===")
+hedef_ip = input("Lutfen taramak istedigin IP adresini yaz (Orn: 8.8.8.8): ")
 
-print(f"--- Tarama Başlatıldı: {hedef_ip} ---")
+port_listesi = [21, 22, 53, 80, 443, 8080]
 
-for port in port_listesi:
-    # Yeni bir bağlantı soketi oluştur
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # 1 saniye bekledikten sonra cevap gelmezse vazgeç
-    s.settimeout(1)
-    
-    # Bağlantıyı dene (0 dönerse başarılıdır)
-    sonuc = s.connect_ex((hedef_ip, port))
-    
-    if sonuc == 0:
-        print(f"Port {port}: [AÇIK]")
-    else:
-        print(f"Port {port}: [KAPALI]")
-    
-    # Soketi her seferinde kapat
-    s.close()
 
-print("--- Tarama Tamamlandı ---")
+gecikme = 0.5        
+zaman_asimi = 1.0    
+
+print(f"\n--- {hedef_ip} uzerinde tarama baslatiliyor... ---")
+print(f"Hiz: Saniyede yaklasik {1/gecikme} port.\n")
+
+
+try:
+    for port in port_listesi:
+       
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(zaman_asimi)
+        
+       
+        sonuc = s.connect_ex((hedef_ip, port))
+        
+        if sonuc == 0:
+            print(f"Port {port:<5}: [ACIK]")
+        else:
+            print(f"Port {port:<5}: [KAPALI]")
+        
+        s.close()
+
+        time.sleep(gecikme)
+
+except KeyboardInterrupt:
+    print("\nTarama kullanıcı tarafından durduruldu.")
+except socket.gaierror:
+    print("\nHata: IP adresi veya Hostname cozulemedi.")
+except Exception as e:
+    print(f"\nBir hata olustu: {e}")
+
+print("\n--- Tarama Tamamlandi ---")
