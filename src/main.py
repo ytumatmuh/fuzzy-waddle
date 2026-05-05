@@ -4,4 +4,4 @@ import utils.port as port
 import utils.tools as tools
 
 def main():
-
+print("Aracım çalışıyor...(TEST)")
